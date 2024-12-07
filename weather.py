@@ -13,7 +13,8 @@ class info:
     high : float 
     curr : float
     low : float 
-    
+
+# Call api and return weather condition, location, temp, high temp, low temp
 def get_weather(city_name,API_key):
     response = requests.get(f"https://api.openweathermap.org/data/2.5/weather?q={city_name}&appid={API_key}").json()
     data = info(
@@ -23,3 +24,4 @@ def get_weather(city_name,API_key):
         curr = response.get("main").get("temp"),
         low = response.get("main").get("temp")
     )
+
