@@ -24,4 +24,3 @@ def get_weather(city_name,API_key):
         curr = response.get("main").get("temp"),
         low = response.get("main").get("temp")
     )
-
