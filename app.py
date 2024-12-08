@@ -1,12 +1,15 @@
 from utils.sql_utils import execute_script,get_db_connection,check_database_connection,check_table_exists
 from models.user_models import create_user
-from weather import search_weather,search_forecastt
+from api.weather_api import search_weather,search_forecastt,search_alert,search_air_quality
 import sqlite3
 from dotenv import load_dotenv
 from flask import Flask, jsonify, make_response, Response, request
+from dataclasses import dataclass
 load_dotenv()
 
 app = Flask(__name__)
+
+list = []
 
 @app.route('/api/health', methods=['GET'])
 def healthcheck() -> Response:
@@ -50,15 +53,3 @@ def create_acc(username, passw):
         print("Account success")
     else: 
         print("Account username taken")
-
-@app.route('/weather', methods=['GET'])
-def get_weather(city):
-    data = search_weather(city)
-    
-
-@app.route('/weather', methods=['GET'])
-def get_forecast(city):
-    data = search_forecastt(city)  
-
-if __name__ == "__main__":
-    get_weather("Boston")
