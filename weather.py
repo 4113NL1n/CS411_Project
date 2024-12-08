@@ -31,6 +31,9 @@ def get_weather(city_name,API_key):
         low = response.get("main").get("temp")
     )
     return data
+def search_weather(city):
+    return get_weather(city, api_key)
+
 #second api call for the next 4  days
 def get_weather_forecast(city_name,API_key):
     forecast = []
@@ -45,6 +48,9 @@ def get_weather_forecast(city_name,API_key):
             )
         forecast.append(data)
     return forecast
+def search_forecastt(city):
+    return get_weather_forecast(city,api_key)
+
 # third api call
 def get_geoCode(city_name,state_code,country_code,limit,API_key):
     response = requests.get(f"http://api.openweathermap.org/geo/1.0/direct?q={city_name},{state_code},{country_code}&limit={limit}&appid={API_key}").json()
@@ -67,32 +73,14 @@ def get_air_quality(name,sCode,cCode,API_key):
     else:
         return False    
 
-# def get_weather_map(layer,API_key):
-#     z = 1
-#     x = 200
-#     y = 200
-#     response = requests.get(f"https://tile.openweathermap.org/map/{layer}/{z}/{x}/{y}.png?appid={API_key}")
-#     print(response.status_code)
-#     img = Image.open(BytesIO(response.content))
-#     root = Tk()
-#     root.title("Image Popup")
-#     image_tk = ImageTk.PhotoImage(img)
+def search_air_quality(name,sCode,cCode):
+    return get_air_quality(name,sCode,cCode,api_key)
 
-#     # Create a label widget to display the image
-#     label = Label(root, image=image_tk)
-#     label.pack()
+def get_alerts(sCode):
+    response = requests.get(f"https://api.weather.gov/alerts/active/?area={sCode}").json()
+    if len(response.get("features")) != 0:
+        return response.get("features")[0].get("properties").get("description")
+    return "No"    
 
-#     # Start the Tkinter main loop to display the popup
-#     root.mainloop()
-
-def get_past_weather(sCode):
-    response = requests.get(f"https://api.weather.gov/alerts/active?area={sCode}").json()
-    print(response)
-def search_weather(city):
-    return get_weather(city, api_key)
-
-def search_forecastt(city):
-    return get_weather_forecast(city,api_key)
-
-if __name__ == "__main__":
-    get_past_weather("NY")
+def search_alert(sCode):
+    return get_alerts(sCode)
