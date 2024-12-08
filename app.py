@@ -35,21 +35,25 @@ def db_check() -> Response:
         return make_response(jsonify({'database_status': 'healthy'}), 200)
     except Exception as e:
         return make_response(jsonify({'error': str(e)}), 404)
+    
+# @app.route('/api/db-check', methods=['GET'])
+# def get_user():
+#     try:
+#         sql_query = "SELECT * FROM user;"
+#         with get_db_connection() as conn:
+#             cursor = conn.cursor()
+#             cursor.execute(sql_query)
+#             users = cursor.fetchall()
+#         for user in users:
+#             print(user) 
+#     except Exception as e:
+#         raise e
 
-def get_user():
-    try:
-        sql_query = "SELECT * FROM user;"
-        with get_db_connection() as conn:
-            cursor = conn.cursor()
-            cursor.execute(sql_query)
-            users = cursor.fetchall()
-        for user in users:
-            print(user) 
-    except Exception as e:
-        raise e
-
+@app.route('/app/<username>/<passw>', methods=['GET'])
 def create_acc(username, passw):
     if create_user(username,passw):
-        print("Account success")
+        app.logger.info("Account Created")
     else: 
-        print("Account username taken")
+        app.logger.info("Account Username taken")
+
+
