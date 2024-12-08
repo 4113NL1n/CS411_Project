@@ -22,7 +22,6 @@ class info:
 # first api call
 def get_weather(city_name,API_key):
     response = requests.get(f"https://api.openweathermap.org/data/2.5/weather?q={city_name}&appid={API_key}&units=imperial").json()
-    print(response)
     data = info(
         main = response.get("weather")[0].get("main"),
         location = response.get("name"),

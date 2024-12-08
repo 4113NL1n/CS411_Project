@@ -57,7 +57,41 @@ def create_user(name,password):
 
 
 def log_in(name,password):
-    if check_user(name):
-        
+    if not check_user(name):
+        try:
+            sql_query = "SELECT salt FROM user WHERE name = ? LIMIT 1;" 
+            with get_db_connection() as conn:
+                cursor = conn.cursor()
+                cursor.execute(sql_query, (name,))
+                result = cursor.fetchone()
+                salt = result[0]
+                if(check_password(salt,password)):
+                    return True
+                return False
+        except sqlite3.Error as e:
+            print(f"Error checking username: {e}")
+            raise e
+    else:
+        return False
+    
+def update_pass(name,Old_pass,new_pass):
+    if not check_user(name):
+        try:
+            sql_query = "SELECT salt FROM user WHERE name = ? LIMIT 1;" 
+            with get_db_connection() as conn:
+                cursor = conn.cursor()
+                cursor.execute(sql_query, (name,))
+                result = cursor.fetchone()
+                salt = result[0]
+                if(check_password(salt,Old_pass)):
+                    hashed = hash_password(new_pass)
+                    update_query = "UPDATE user SET hashed_password = ? WHERE username = ?;"
+                    cursor.execute(update_query, (hashed, name))
+                    conn.commit()
+                else:
+                    return False
+        except sqlite3.Error as e:
+            print(f"Error checking username: {e}")
+            raise e
     else:
         return False

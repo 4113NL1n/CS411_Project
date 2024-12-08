@@ -1,6 +1,5 @@
-from utils.sql_utils import execute_script,get_db_connection,check_database_connection,check_table_exists
-from models.user_models import create_user
-from api.weather_api import search_weather,search_forecastt,search_alert,search_air_quality
+from utils.sql_utils import execute_script,check_database_connection,check_table_exists
+from models.user_models import create_user,log_in,update_pass
 import sqlite3
 from dotenv import load_dotenv
 from flask import Flask, jsonify, make_response, Response, request
@@ -19,6 +18,7 @@ def healthcheck() -> Response:
     Returns:
         JSON response indicating the health status of the service.
     """
+    
     app.logger.info('Health check')
     return make_response(jsonify({'status': 'healthy'}), 200)
 
@@ -36,24 +36,26 @@ def db_check() -> Response:
     except Exception as e:
         return make_response(jsonify({'error': str(e)}), 404)
     
-# @app.route('/api/db-check', methods=['GET'])
-# def get_user():
-#     try:
-#         sql_query = "SELECT * FROM user;"
-#         with get_db_connection() as conn:
-#             cursor = conn.cursor()
-#             cursor.execute(sql_query)
-#             users = cursor.fetchall()
-#         for user in users:
-#             print(user) 
-#     except Exception as e:
-#         raise e
 
-@app.route('/app/<username>/<passw>', methods=['GET'])
+@app.route('/app/<username>/<passw>', methods=['POST'])
 def create_acc(username, passw):
     if create_user(username,passw):
         app.logger.info("Account Created")
     else: 
         app.logger.info("Account Username taken")
 
+@app.route('/app/<username>/<passw>', methods=['GET'])
+def log_in(username,passw):
+    if(log_in(username,passw)):
+        app.logger.info("logged in")
+    else:
+        app.logger.info("Unable to log in, password and username wrong")
 
+@app.route('/app/<username>/<old_passw>/<new_passw>', methods=['PUT'])
+def update_pass(username,old_passw,new_passw):
+    if(log_in(username,old_passw)):
+        app.logger.info("attemping to change password")
+        update_pass(username,old_passw,new_passw)
+        app.logger.info("Successfully changed password")
+    else:
+        app.logger.info("Unable to log in, password and username wrong")

@@ -29,8 +29,8 @@ def test_create_user(mock_cursor):
     password = "123456" 
     create_user(name=username, password=password)  
     expected_query = normalize_whitespace(
-        """INSERT INTO user (username, pass, salt) 
-        VALUES (?, ?, ?);
+        """INSERT INTO user (username, salt) 
+        VALUES (?, ?);
     """)
     actual_query = normalize_whitespace(mock_cursor.execute.call_args[0][0])
     assert actual_query == expected_query
