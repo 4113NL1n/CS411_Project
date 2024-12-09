@@ -4,13 +4,13 @@ BASE_URL="http://127.0.0.1:5000"
 check_health() {
     echo "Checking health status..."
     echo "URL: $BASE_URL/health"  # Print the URL being accessed
-    response=$(curl -v "$BASE_URL/health")  # Fetch the response
+    response=$(curl -s "$BASE_URL/health")  # Fetch the response
     echo "Response: $response"  # Print the full response to check
     echo "$response" | grep -q '"status":"healthy"'
     if [ $? -eq 0 ]; then
         echo "Service is healthy."
     else
-        echo "Health check failed."
+        echo "Health check failed: $response"
         exit 1
     fi
 }

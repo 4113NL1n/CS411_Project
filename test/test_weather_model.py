@@ -14,6 +14,7 @@ def test_get_weather(client):
     response = client.get('/weather/Boston')
     assert response.status_code == 200
     
+    
 def test_get_forecast(client):
     response =client.get("/weather/forecast/Boston")
     assert response.status_code == 200
