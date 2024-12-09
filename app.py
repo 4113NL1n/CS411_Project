@@ -8,11 +8,11 @@ import logging
 load_dotenv()
 app = Flask(__name__)
 
-@app.route('/', methods=['GET'])
+@app.route('/')
 def home():
     return "weather app"
 
-@app.route('/healt', methods=['GET'])
+@app.route('/health', methods=['GET'])
 def healthcheck() -> Response:
     app.logger.info('Health check')
     return make_response(jsonify({'status': 'healthy'}), 200)
@@ -34,7 +34,7 @@ def create_acc():
         app.logger.error(f"Error: {str(e)}")  # Log error if there is a ValueError
         return jsonify({"error": str(e)}), 400
     
-@app.route('/login', methods=['GET'])
+@app.route('/login', methods=['POST'])
 def log_in_route():
     data = request.get_json()
     username = data.get('username')
@@ -46,7 +46,7 @@ def log_in_route():
         app.logger.warning("Unable to log in, invalid credentials")
         return jsonify({"message": "Invalid credentials"}), 401
 
-@app.route('/password', methods=['PUT'])
+@app.route('/password', methods=['POST'])
 def update_pass_route():
     data = request.get_json()
     username = data.get('username')
@@ -59,7 +59,7 @@ def update_pass_route():
     else:
         app.logger.warning("Unable to log in, invalid credentials")
         return jsonify({"message": "Invalid credentials"}), 401
-fave = {}
+fave = []
 
 @app.route('/weather/favorite', methods=['GET'])
 def get_weather_fave() -> Response:
@@ -86,7 +86,10 @@ def get_forecast(city) -> Response:
 @app.route('/weather/air/<city>/<state_code>/<country_code>', methods=['GET']) 
 def get_air(city,state_code,country_code) -> Response:
     data = search_air_quality(city,state_code,country_code)  
-    return jsonify(data)
+    if data:
+        return make_response(jsonify({'air': 'good'}), 200)
+    return make_response(jsonify({'air': 'bad'}), 200)
+
 
 @app.route('/weather/alerts/<state_code>', methods=['GET'])
 def get_alerts(state_code) -> Response:
@@ -95,10 +98,7 @@ def get_alerts(state_code) -> Response:
 @app.route('/weather/favorite/save/<city>', methods=['PUT'])
 def save_favorite(city) -> Response:
     fave.append(city)
-
-# @app.route('/health', methods=['GET'])
-# def test() -> Response: 
-#     return jsonify({"message": "Hello, world!"}), 200
+    return fave
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port=5000)

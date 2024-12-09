@@ -1,6 +1,6 @@
 import pytest
 from flask import Flask, jsonify
-from model.weather_models import app
+from app import app
 from unittest.mock import patch
 
 @pytest.fixture
