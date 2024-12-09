@@ -1,6 +1,6 @@
 import sys
 import os
-# sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../')))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../')))
 
 import pytest
 import requests
@@ -42,8 +42,8 @@ def test_create_user(mock_cursor):
     password = "123456" 
     create_user(name=username, password=password)  
     expected_query = normalize_whitespace(
-        """INSERT INTO user (username, salt, pass) 
-        VALUES (?, ?, ?);
+        """INSERT INTO user (username, pass) 
+        VALUES (?, ?);
     """)
     actual_query = normalize_whitespace(mock_cursor.execute.call_args[0][0])
     assert actual_query == expected_query
@@ -61,7 +61,7 @@ def test_log_in(mock_cursor,mocker):
     """
     username = "Allen"  
     password = "123456" 
-    Hashpassword, salt = hash_password(password)
+    Hashpassword = hash_password(password)
     mocker.patch("model.user_model.check_user", return_value=False)
     mock_cursor.fetchone.return_value = [Hashpassword]
     assert log_in(username, password) == True
@@ -79,7 +79,7 @@ def test_update_pass(mocker,mock_cursor):
     """
     username = "Allen"  
     password = "123456" 
-    Hashpassword, salt = hash_password(password)
+    Hashpassword = hash_password(password)
     mocker.patch("model.user_model.check_user", return_value=False)
     mocker.patch("model.user_model.check_password", return_value=True)
     mock_cursor.fetchone.return_value = [Hashpassword]
