@@ -1,5 +1,5 @@
 from utils.sql_utils import execute_script,check_database_connection,check_table_exists
-from models.user_models import create_user,log_in,update_pass
+from model.user_model import create_user,log_in,update_pass
 import sqlite3
 from dotenv import load_dotenv
 from flask import Flask, jsonify, make_response, Response, request
@@ -59,3 +59,10 @@ def update_pass(username,old_passw,new_passw):
         app.logger.info("Successfully changed password")
     else:
         app.logger.info("Unable to log in, password and username wrong")
+        
+
+if __name__ == "__main__":
+    execute_script()
+
+
+    
