@@ -48,6 +48,97 @@ log_in(){
     fi
 }
 
+update_pass(){
+    echo "Testing password update..."
+    response=$(curl -s -X PUT -H "Content-Type: application/json" -d '{"username": "Allen", "old_passw": "1234","new_passw": "321"}' "$BASE_URL/update_pass_route")
+    echo "$response" | grep -q '"message": "Password updated ."'
+    if [ $? -eq 0 ]; then
+        echo "Password update passed!"
+    else
+        echo "Password update failed."
+        exit 1
+    fi
+}
+
+get_weat(){
+    city="boston"
+    echo "Getting Weather"
+    response=$(curl -s -X GET "$BASE_URL/weather/$city") 
+    echo "$response" | grep -q '"weather" : "boston"'
+if [ $? -eq 0 ]; then
+        echo "weather passed!"
+    else
+        echo "weather failed."
+        exit 1
+    fi
+}
+
+get_fore(){
+    city="boston"
+    echo "Getting forecast"
+    response=$(curl -s -X GET "$BASE_URL/weather/forecast/$city") 
+        echo "$response" | grep -q '"forecast" : "boston"'
+    if [ $? -eq 0 ]; then
+        echo "forecast passed!"
+    else
+        echo "forecast failed."
+        exit 1
+    fi
+}
+
+get_ai(){
+    city="boston"
+    state_code="ma"
+    country_code="US"
+    echo "Getting air quality"
+    response=$(curl -s -X GET "$BASE_URL/weather/air/$city/$state_code/$country_code") 
+        echo "$response" | grep -q '"air quality" : "boston"'
+    if [ $? -eq 0 ]; then
+        echo "air passed!"
+    else
+        echo "air failed."
+        exit 1
+    fi
+}
+
+get_alert(){
+    state_code="ma"
+    echo "Getting alerts"
+    response=$(curl -s -X GET "$BASE_URL/weather/alerts/$state_code") 
+        echo "$response" | grep -q '"alerts" : "boston"'
+    if [ $? -eq 0 ]; then
+        echo "alerts passed!"
+    else
+        echo "alerts failed."
+        exit 1
+    fi
+}
+
+add_fave(){
+    city="boston"
+    echo "adding favorite"
+    response=$(curl -s -X POST "$BASE_URL/weather/favorite/save/$city") 
+        echo "$response" | grep -q '"saving" : "Boston"'
+    if [ $? -eq 0 ]; then
+        echo "saving passed!"
+    else
+        echo "saving failed."
+        exit 1
+    fi
+}
+
+get_fave(){
+    echo "Getting favorite"
+    response=$(curl -s -X GET "$BASE_URL/weather/favorite") 
+        echo "$response" | grep -q '"favorite" : "list"'
+    if [ $? -eq 0 ]; then
+        echo "fave passed!"
+    else
+        echo "fave failed."
+        exit 1
+    fi
+}
+
 # Run health check
 Check-Health
 
@@ -56,3 +147,18 @@ check_db
 create_user
 
 log_in
+
+update_pass
+
+get_weat
+
+get_fore
+
+get_ai
+
+get_alert
+
+add_fave
+
+get_fave
+
