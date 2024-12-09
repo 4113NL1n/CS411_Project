@@ -29,6 +29,15 @@ def mock_cursor(mocker):
     return mock_cursor 
 
 def test_create_user(mock_cursor): 
+    """
+    Test user creation in the database.
+
+    Args:
+        mock_cursor: A mock cursor for simulating database interactions.
+
+    Asserts:
+        The SQL query executed matches the expected query format.
+    """
     username = "Allen"  
     password = "123456" 
     create_user(name=username, password=password)  
@@ -40,6 +49,16 @@ def test_create_user(mock_cursor):
     assert actual_query == expected_query
 
 def test_log_in(mock_cursor,mocker):
+    """
+    Test user login by verifying credentials.
+
+    Args:
+        mock_cursor: A mock cursor for simulating database interactions.
+        mocker: A mock object for patching functions.
+
+    Asserts:
+        Login succeeds when the correct username and password are provided.
+    """
     username = "Allen"  
     password = "123456" 
     Hashpassword, salt = hash_password(password)
@@ -48,6 +67,16 @@ def test_log_in(mock_cursor,mocker):
     assert log_in(username, password) == True
 
 def test_update_pass(mocker,mock_cursor):
+    """
+    Test password update for a user.
+
+    Args:
+        mocker: A mock object for patching functions.
+        mock_cursor: A mock cursor for simulating database interactions.
+
+    Asserts:
+        Password update succeeds when old password verification passes.
+    """
     username = "Allen"  
     password = "123456" 
     Hashpassword, salt = hash_password(password)

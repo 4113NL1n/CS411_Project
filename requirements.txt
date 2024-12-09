@@ -3,7 +3,6 @@ Flask-RESTful
 requests
 python-dotenv
 SQLalchemy
-python3
 bcrypt
 pytest
 pytest-mock

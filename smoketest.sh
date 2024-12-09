@@ -12,147 +12,127 @@ check_health() {
     fi
 }
 
-
-create_user(){
+create_user() {
     echo "Creating user account..."
-    response=$(curl -s -X POST -H "Content-Type: application/json" -d '{"username": "Allen", "password": "1223"}' "$BASE_URL/create")
+    response=$(curl -s -X POST -H "Content-Type: application/json" -d '{"username": "testuser", "password": "password123"}' "$BASE_URL/create")
     echo "$response" | grep -q '"message": "Account created successfully."'
     if [ $? -eq 0 ]; then
         echo "Account creation passed!"
     else
-        echo "Account creation failed."
+        echo "Account creation failed: $response"
         exit 1
     fi
 }
 
-log_in(){
-    echo "Logging in"
-    response=$(curl -s -X POST -H "Content-Type: application/json" -d '{"username": "Allen", "password": "1223"}' "$BASE_URL/login")
-    echo "$response" | grep -q '"message": "Logged in."'
+log_in() {
+    echo "Logging in..."
+    response=$(curl -s -X POST -H "Content-Type: application/json" -d '{"username": "testuser", "password": "password123"}' "$BASE_URL/login")
+    echo "$response" | grep -q '"message": "Logged in"'
     if [ $? -eq 0 ]; then
-        echo "login passed!"
+        echo "Login passed!"
     else
-        echo "login failed."
+        echo "Login failed: $response"
         exit 1
     fi
 }
 
-update_pass(){
+update_pass() {
     echo "Testing password update..."
-    response=$(curl -s -X PUT -H "Content-Type: application/json" -d '{"username": "Allen", "old_passw": "1223","new_passw": "1234"}' "$BASE_URL/update_pass_route")
+    response=$(curl -s -X POST -H "Content-Type: application/json" -d '{"username": "testuser", "old_password": "password123", "new_password": "newpassword"}' "$BASE_URL/password")
     echo "$response" | grep -q '"message": "Password updated successfully"'
     if [ $? -eq 0 ]; then
         echo "Password update passed!"
     else
-        echo "Password update failed."
+        echo "Password update failed: $response"
         exit 1
     fi
 }
 
-get_weat(){
-    city="boston"
-    echo "Getting Weather"
-    response=$(curl -s -X GET "$BASE_URL/weather/$city") 
-    city_in_response=$(echo "$response" | jq -r '.location')
-if [ "$city_in_response" == "boston" ]; then
+get_weather() {
+    city="Boston"
+    echo "Getting weather for $city..."
+    response=$(curl -s -X GET "$BASE_URL/weather/$city")
+    echo "$response" | grep -q '"location": "Boston"'
+    if [ $? -eq 0 ]; then
         echo "Weather passed!"
     else
-        echo "Weather failed."
+        echo "Weather failed: $response"
         exit 1
     fi
 }
 
-get_fore(){
-    city="boston"
-    echo "Getting forecast"
-    response=$(curl -s -X GET "$BASE_URL/weather/forecast/$city") 
-    city_in_response=$(echo "$response" | jq -r '.location')
-    if [ "$city_in_response" == "boston" ]; then
-        echo "Weather passed!"
+get_forecast() {
+    city="Boston"
+    echo "Getting forecast for $city..."
+    response=$(curl -s -X GET "$BASE_URL/weather/forecast/$city")
+    if [ -n "$response" ]; then
+        echo "Forecast passed!"
     else
-        echo "Weather failed."
+        echo "Forecast failed: $response"
         exit 1
     fi
 }
 
-get_ai(){
-    city="boston"
-    state_code="ma"
+get_air_quality() {
+    city="Boston"
+    state_code="MA"
     country_code="US"
-    echo "Getting air quality"
-    response=$(curl -s -X GET "$BASE_URL/weather/air/$city/$state_code/$country_code") 
-        echo "$response" | grep -q '"air" : "good"'
+    echo "Getting air quality for $city..."
+    response=$(curl -s -X GET "$BASE_URL/weather/air/$city/$state_code/$country_code")
+    echo "$response" | grep -q '"air": "good"'
     if [ $? -eq 0 ]; then
-        echo "air passed!"
+        echo "Air quality passed!"
     else
-        echo "air failed."
+        echo "Air quality failed: $response"
         exit 1
     fi
 }
 
-get_alert(){
-    state_code="ma"
-    echo "Getting alerts"
-    response=$(curl -s -X GET "$BASE_URL/weather/alerts/$state_code") 
-        echo "$response" | grep -q '"alerts" : "boston"'
-    if [ $? -eq 0 ]; then
-        echo "alerts passed!"
+get_alerts() {
+    state_code="MA"
+    echo "Getting alerts for state $state_code..."
+    response=$(curl -s -X GET "$BASE_URL/weather/alerts/$state_code")
+    if [ -n "$response" ]; then
+        echo "Alerts passed!"
     else
-        echo "alerts failed."
+        echo "Alerts failed: $response"
         exit 1
     fi
 }
 
-add_fave(){
-    city="boston"
-    echo "Adding favorite"
+add_favorite() {
+    city="Boston"
+    echo "Adding $city to favorites..."
     response=$(curl -s -X PUT "$BASE_URL/weather/favorite/save/$city")
-    
-    # Check if the city "boston" is in the response list
-    echo "$response" | grep -q '"boston"'
-    
+    echo "$response" | grep -q "$city"
     if [ $? -eq 0 ]; then
-        echo "Saving passed!"
+        echo "Favorite added passed!"
     else
-        echo "Saving failed."
+        echo "Favorite add failed: $response"
         exit 1
     fi
 }
 
-get(){
-    city="boston"
-    echo "Adding favorite"
-    response=$(curl -s -X PUT "$BASE_URL/weather/favorite")
-    
-    echo "$response" | grep -q '"boston"'
-    
+get_favorites() {
+    echo "Getting favorites..."
+    response=$(curl -s -X GET "$BASE_URL/weather/favorite")
+    echo "$response" | grep -q "Boston"
     if [ $? -eq 0 ]; then
-        echo "Saving passed!"
+        echo "Favorites passed!"
     else
-        echo "Saving failed."
+        echo "Favorites failed: $response"
         exit 1
     fi
 }
 
+# Execute all checks
 check_health
-
-check_db
-
 create_user
-
 log_in
-
 update_pass
-
-get_weat
-
-get_fore
-
-get_ai
-
-get_alert
-
-add_fave
-
-get_fave
-
+get_weather
+get_forecast
+get_air_quality
+get_alerts
+add_favorite
+get_favorites

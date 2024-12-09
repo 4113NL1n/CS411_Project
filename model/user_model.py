@@ -10,6 +10,15 @@ from utils.sql_utils import get_db_connection, initialize_database
 initialize_database()
 
 def check_user(username):
+    """
+    Check if a username exists in the database.
+
+    Args:
+        username (str): The username to check.
+
+    Returns:
+        bool: True if the username does not exist, False if it already exists.
+    """
     try:
         sql_query = "SELECT 1 FROM user WHERE username = ? LIMIT 1" 
         with get_db_connection() as conn:
@@ -27,13 +36,42 @@ def check_user(username):
         raise e
 
 def hash_password(password):
+    """
+    Hash a plain-text password using bcrypt.
+
+    Args:
+        password (str): The plain-text password.
+
+    Returns:
+        str: The hashed password.
+    """
     hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
     return hashed_password.decode('utf-8')  # Return hash as a string
 
 def check_password(input_password, stored_hash):
+    """
+    Verify if an input password matches a stored hashed password.
+
+    Args:
+        input_password (str): The plain-text password entered by the user.
+        stored_hash (str): The hashed password stored in the database.
+
+    Returns:
+        bool: True if the passwords match, False otherwise.
+    """
     return bcrypt.checkpw(input_password.encode('utf-8'), stored_hash.encode('utf-8'))
 
 def log_in(name, password):
+    """
+    Log in a user by verifying their credentials.
+
+    Args:
+        name (str): The username.
+        password (str): The plain-text password entered by the user.
+
+    Returns:
+        bool: True if login is successful, False otherwise.
+    """
     if not check_user(name):  # Check if user exists
         try:
             sql_query = "SELECT pass FROM user WHERE username = ? LIMIT 1;" 
@@ -59,6 +97,16 @@ def log_in(name, password):
         return False
     
 def create_user(name,password) -> None:
+    """
+    Create a new user in the database.
+
+    Args:
+        name (str): The username.
+        password (str): The plain-text password to be hashed and stored.
+
+    Raises:
+        ValueError: If the username is already taken.
+    """
     hased_Pass = hash_password(password)
     try:
         sql_insert_query = """
@@ -74,8 +122,18 @@ def create_user(name,password) -> None:
     
 
 
-
 def update_pass(name,Old_pass,new_pass):
+    """
+    Update a user's password after verifying their old password.
+
+    Args:
+        name (str): The username.
+        Old_pass (str): The user's old plain-text password.
+        new_pass (str): The new plain-text password to set.
+
+    Returns:
+        bool: True if the password was updated successfully, False otherwise.
+    """
     if (not check_user(name)):
         try:
             sql_query = "SELECT pass FROM user WHERE username = ? LIMIT 1;" 

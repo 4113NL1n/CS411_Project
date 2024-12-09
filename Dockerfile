@@ -13,13 +13,20 @@ COPY .env /app/.env
 # Install any needed packages specified in requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Install SQLite3
-RUN apt-get update && apt-get install -y sqlite3
+# Install SQLite3 and tkinter
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    sqlite3 \
+    python3-tk \
+    && apt-get clean
 
 # Add a shell script that loads the .env file and handles database creation
 COPY ./sql/create_db.sh /app/sql/create_db.sh
-COPY ./sql/create_song_table.sql /app/sql/create_user_table.sql
+COPY ./sql/create_user_table.sql /app/sql/create_user_table.sql
 RUN chmod +x /app/sql/create_db.sh
+
+# Copy the entrypoint script
+COPY ./entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
 
 # Define a volume for persisting the database
 VOLUME ["/app/db"]
