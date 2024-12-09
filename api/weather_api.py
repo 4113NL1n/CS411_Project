@@ -20,7 +20,7 @@ class info:
 
 # Call api and return weather condition, location, temp, high temp, low temp
 # first api call
-def get_weather(city_name,API_key):
+def fetch_weather(city_name,API_key):
     response = requests.get(f"https://api.openweathermap.org/data/2.5/weather?q={city_name}&appid={API_key}&units=imperial").json()
     data = info(
         main = response.get("weather")[0].get("main"),
@@ -30,8 +30,9 @@ def get_weather(city_name,API_key):
         low = response.get("main").get("temp")
     )
     return data
+
 def search_weather(city):
-    return get_weather(city, api_key)
+    return fetch_weather(city, api_key)
 
 #second api call for the next 4  days
 def get_weather_forecast(city_name,API_key):

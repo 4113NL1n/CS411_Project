@@ -38,22 +38,20 @@ def hash_password(password):
 def check_password(stored_hash, input_password):
     return bcrypt.checkpw(input_password.encode('utf-8'), stored_hash.encode('utf-8'))
 
-def create_user(name,password):
-    if check_user(name):
-        hased_Pass,salt = hash_password(password)
-        try:
-            sql_insert_query = """
-            INSERT INTO user (username, salt, pass)
-            VALUES (?, ?, ?);
-            """
-            with get_db_connection() as conn:
-                    cursor = conn.cursor()
-                    cursor.execute(sql_insert_query, (name, salt, hased_Pass))
-                    conn.commit() 
-        except sqlite3.Error as e :
-            raise e
-    else:
-        return False
+def create_user(name,password) -> None:
+    hased_Pass,salt = hash_password(password)
+    try:
+        sql_insert_query = """
+        INSERT INTO user (username, salt, pass)
+        VALUES (?, ?, ?);
+        """
+        with get_db_connection() as conn:
+                cursor = conn.cursor()
+                cursor.execute(sql_insert_query, (name, salt, hased_Pass))
+                conn.commit() 
+    except sqlite3.IntegrityError as e :
+        raise ValueError(f"Username '{name}' is already taken.")
+    
 
 
 def log_in(name,password):
