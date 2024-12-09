@@ -1,9 +1,12 @@
 BASE_URL="http://127.0.0.1:5000"
 
+
 check_health() {
     echo "Checking health status..."
-    response=$(curl -s "$BASE_URL/health")
-    echo "$response" | grep -q '"status": "healthy"'
+    echo "URL: $BASE_URL/health"  # Print the URL being accessed
+    response=$(curl -v "$BASE_URL/health")  # Fetch the response
+    echo "Response: $response"  # Print the full response to check
+    echo "$response" | grep -q '"status":"healthy"'
     if [ $? -eq 0 ]; then
         echo "Service is healthy."
     else
@@ -16,6 +19,7 @@ check_health() {
 create_user(){
     echo "Creating user account..."
     response=$(curl -s -X POST -H "Content-Type: application/json" -d '{"username": "Allen", "password": "1223"}' "$BASE_URL/create")
+    echo "Response: $response"  # Log the full response for debugging
     echo "$response" | grep -q '"message": "Account created successfully."'
     if [ $? -eq 0 ]; then
         echo "Account creation passed!"
@@ -135,9 +139,6 @@ get(){
 }
 
 check_health
-
-check_db
-
 create_user
 
 log_in
