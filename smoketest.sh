@@ -1,4 +1,4 @@
-BASE_URL = "http://127.0.0.1:5000"
+BASE_URL="http://127.0.0.1:5000"
 
 check_health() {
     echo "Checking health status..."
@@ -139,8 +139,7 @@ get_fave(){
     fi
 }
 
-# Run health check
-Check-Health
+check_health
 
 check_db
 

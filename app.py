@@ -69,5 +69,4 @@ def update_pass_route():
         return jsonify({"message": "Invalid credentials"}), 401
 
 if __name__ == "__main__":
-    execute_script()  # Execute the database setup script
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
