@@ -29,7 +29,7 @@ def create_acc():
     try:
         create_user(username, password)
         app.logger.info("Account created successfully.")  # Add this log
-        return jsonify({"message": "Account created successfully."}), 201
+        return jsonify({"message": "Account created successfully."}), 200
     except ValueError as e:
         app.logger.error(f"Error: {str(e)}")  # Log error if there is a ValueError
         return jsonify({"error": str(e)}), 400
