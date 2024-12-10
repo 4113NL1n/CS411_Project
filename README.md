@@ -25,50 +25,51 @@ The app has 2 parts, a user and weather. User will prompt the user to log in or 
     "password": "securepassword"
   }
 
-Route: /login
-● Request Type: POST
-● Purpose: Log in with the user's username and password
-● Request Body:
-○ username (String): User's username.
-○ password (String): User's password.
-● Response Format: JSON
-○ Success Response Example:
-■ Code: 200
-■ Content: { "message": "Logged in" }
-● Example Request:
-{
-"username": "newuser123",
-"password": "securepassword"
-}
-● Example Response:
-{
-"message": "Logged in",
-"status": "200"
-}
+## Route: `/login`
+- **Request Type**: `POST`
+- **Purpose**: Log in with the user's username and password.
+- **Request Body**:
+  - `username` (String): User's username.
+  - `password` (String): User's password.
+- **Response Format**: JSON
+  - **Success Response Example**:
+    - **Code**: 200
+    - **Content**:
+      ```json
+      {
+        "message": "Logged in"
+      }
+      ```
+- **Example Request**:
+  ```json
+  {
+    "username": "newuser123",
+    "password": "securepassword"
+  }
 
 
-Route: /password
-● Request Type: POST
-● Purpose: Changes the user's old password with the new one
-● Request Body:
-○ username (String): User's username.
-○ old_password (String): User's old password.
-○ new_password (String): User's new password.
-● Response Format: JSON
-○ Success Response Example:
-■ Code: 200
-■ Content: { "message": "Password updated successfully" }
-● Example Request:
-{
-"username": "newuser123",
-"old_password": "securepassword"
-"new_password": "newsecurepassword"
-}
-● Example Response:
-{
-"message": "Password updated successfully",
-"status": "200"
-}
+    Route: /password
+    ● Request Type: POST
+    ● Purpose: Changes the user's old password with the new one
+    ● Request Body:
+    ○ username (String): User's username.
+    ○ old_password (String): User's old password.
+    ○ new_password (String): User's new password.
+    ● Response Format: JSON
+    ○ Success Response Example:
+    ■ Code: 200
+    ■ Content: { "message": "Password updated successfully" }
+    ● Example Request:
+    {
+    "username": "newuser123",
+    "old_password": "securepassword"
+    "new_password": "newsecurepassword"
+    }
+    ● Example Response:
+    {
+    "message": "Password updated successfully",
+    "status": "200"
+    }
 
 Route: /password
 ● Request Type: POST
