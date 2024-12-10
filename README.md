@@ -3,26 +3,27 @@ Boston University CS 411 final Project
 
 The app has 2 parts, a user and weather. User will prompt the user to log in or create account. Weather will allow user to search for weather, forecast, alerts, and air quality in a area.
 
-Route: /create
-● Request Type: POST
-● Purpose: Creates a new user account with a username and password.
-● Request Body:
-○ username (String): User's chosen username.
-○ password (String): User's chosen password.
-● Response Format: JSON
-○ Success Response Example:
-■ Code: 200
-■ Content: { "message": "Account created successfully" }
-● Example Request:
-{
-"username": "newuser123",
-"password": "securepassword"
-}
-● Example Response:
-{
-"message": "Account created successfully",
-"status": "200"
-}
+## Route: `/create`
+- **Request Type**: `POST`
+- **Purpose**: Creates a new user account with a username and password.
+- **Request Body**:
+  - `username` (String): User's chosen username.
+  - `password` (String): User's chosen password.
+- **Response Format**: JSON
+  - **Success Response Example**:
+    - **Code**: 200
+    - **Content**:
+      ```json
+      {
+        "message": "Account created successfully"
+      }
+      ```
+- **Example Request**:
+  ```json
+  {
+    "username": "newuser123",
+    "password": "securepassword"
+  }
 
 Route: /login
 ● Request Type: POST
