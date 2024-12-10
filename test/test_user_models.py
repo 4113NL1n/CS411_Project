@@ -1,7 +1,8 @@
 import sys
 import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../')))
-
+import json
+from app import app
 import pytest
 import requests
 import re
@@ -47,6 +48,74 @@ def test_create_user(mock_cursor):
     """)
     actual_query = normalize_whitespace(mock_cursor.execute.call_args[0][0])
     assert actual_query == expected_query
+
+def test_create_acc_missing_fields():
+    """
+    Test the /create endpoint for handling missing username or password.
+    """
+    with app.test_client() as client:
+        # Test case: Missing both fields
+        response = client.post(
+            '/create',
+            data=json.dumps({}),
+            content_type='application/json'
+        )
+        assert response.status_code == 400
+        assert response.get_json() == {"error": "Username and password are required."}
+
+        # Test case: Missing username
+        response = client.post(
+            '/create',
+            data=json.dumps({"password": "securepassword"}),
+            content_type='application/json'
+        )
+        assert response.status_code == 400
+        assert response.get_json() == {"error": "Username and password are required."}
+
+        # Test case: Missing password
+        response = client.post(
+            '/create',
+            data=json.dumps({"username": "newuser123"}),
+            content_type='application/json'
+        )
+        assert response.status_code == 400
+        assert response.get_json() == {"error": "Username and password are required."}
+
+def test_create_acc_user_already_exists(mocker):
+    """
+    Test the /create endpoint for handling a username that already exists.
+    """
+    username = "Allen"  
+    password = "123456" 
+    create_user(name=username, password=password)
+    with app.test_client() as client:
+        # Mock the create_user function to raise a ValueError
+    
+        response = client.post(
+            '/create',
+            data=json.dumps({"username": "Allen", "password": "123456"}),
+            content_type='application/json'
+        )
+        assert response.get_json() == {"error": "Username 'Allen' is already taken."}
+
+def test_log_in_route_invalid_credentials(mocker):
+    """
+    Test the /login endpoint for invalid credentials.
+    """
+    with app.test_client() as client:
+        # Mock the log_in function to return False (invalid credentials)
+        mocker.patch(
+            "model.user_model.log_in",
+            return_value=False
+        )
+        
+        response = client.post(
+            '/login',
+            data=json.dumps({"username": "invalid_user", "password": "wrongpassword"}),
+            content_type='application/json'
+        )
+        assert response.status_code == 401
+        assert response.get_json() == {"message": "Invalid credentials"}
 
 def test_log_in(mock_cursor,mocker):
     """

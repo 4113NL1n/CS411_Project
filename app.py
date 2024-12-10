@@ -46,6 +46,8 @@ def log_in_route():
         app.logger.warning("Unable to log in, invalid credentials")
         return jsonify({"message": "Invalid credentials"}), 401
 
+
+
 @app.route('/password', methods=['POST'])
 def update_pass_route():
     data = request.get_json()
