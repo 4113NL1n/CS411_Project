@@ -6,11 +6,12 @@ The app has 2 parts, a user and weather. User will prompt the user to log in or 
 ## Running the Program: `/Guide`
 Create a .env file in the root directory, in that file add
 - **SQL_CREATE_TABLE_PATH=sql/create_user_table.sql**
-- **DB_PATH = sql/user.db**
-- **CREATE_DB = true**
-```
-Generate a API key from OpenWeatherApi. Put it as API_KEY="your_key" in the env file. Run the reqruiements.txt and run dockerfile, then you could do `python app.py` or `flask run` then try out all the different endpoitn apis!
-```
+- **DB_PATH=sql/user.db**
+- **CREATE_DB=true**
+- **API_KEY="your_key"**
+
+- Generate a API key from OpenWeatherApi. Put it as API_KEY="your_key" in the env file. Run the reqruiements.txt and run dockerfile, then you could do `python app.py` or `flask run` then try out all the different endpoitn apis!
+
 
 ## Route: `/create`
 - **Request Type**: `POST`
